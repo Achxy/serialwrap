@@ -27,7 +27,7 @@
   },
   "plugins": {
     "updater": {
-      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IENDQjI5OEIwMjkwOEY2Q0EKUldUSzlnZ3BzSml5ekhJK2tydkFTTm11Q0RJQXZLdXlJQ2gzMWtQdFN4ME41ZktIZGYwcExnSDQK",
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDJDQ0QxQzY3QzBDOUFGRDMKUldUVHI4bkFaeHpOTENhK3JaL09GMGVwOEtERXFwUnl4cTVMREx4OGpJVndvSHF1OVYvRGwzcTcK",
       "endpoints": [
         "https://github.com/Achxy/serialwrap/releases/latest/download/latest.json"
       ],
