@@ -1,0 +1,11 @@
+[package]
+name = "serialwarp-core"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+
+[dependencies]
+bytes = { workspace = true }
+thiserror = { workspace = true }
+crc32c = { workspace = true }

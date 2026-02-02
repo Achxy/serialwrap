@@ -1,0 +1,10 @@
+[package]
+name = "serialwarp-render"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+
+[dependencies]
+serialwarp-core = { workspace = true }
+sdl2 = { workspace = true }

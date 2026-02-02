@@ -1,0 +1,15 @@
+[package]
+name = "serialwarp-transport"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+
+[dependencies]
+serialwarp-core = { workspace = true }
+bytes = { workspace = true }
+tokio = { workspace = true }
+thiserror = { workspace = true }
+async-trait = { workspace = true }
+nusb = { workspace = true }
+tracing = { workspace = true }

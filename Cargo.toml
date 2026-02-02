@@ -1,0 +1,41 @@
+[workspace]
+resolver = "2"
+members = ["crates/*", "bins/*", "tests/integration"]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+rust-version = "1.70.0"
+license = "Apache-2.0 OR MIT"
+
+[workspace.dependencies]
+tokio = { version = "1.35.1", features = ["full"] }
+thiserror = "1.0.56"
+anyhow = "1.0.79"
+tracing = "0.1.40"
+tracing-subscriber = { version = "0.3.18", features = ["env-filter"] }
+bytes = "1.5.0"
+zerocopy = { version = "0.7.32", features = ["derive"] }
+crc32c = "0.6.5"
+nusb = "0.1.9"
+ffmpeg-next = "8.0"
+sdl2 = { version = "0.36.0", features = ["use-pkgconfig"] }
+clap = { version = "4.4.18", features = ["derive"] }
+async-trait = "0.1.77"
+
+# macOS only
+objc2 = "0.5.1"
+objc2-foundation = { version = "0.2.0", features = ["NSArray", "NSString", "NSObject"] }
+block2 = "0.5.0"
+dispatch = "0.2.0"
+core-foundation = "0.9.4"
+screencapturekit = "1.5.0"
+
+# Internal crates
+serialwarp-core = { path = "crates/serialwarp-core" }
+serialwarp-transport = { path = "crates/serialwarp-transport" }
+serialwarp-decode = { path = "crates/serialwarp-decode" }
+serialwarp-render = { path = "crates/serialwarp-render" }
+serialwarp-vdisp = { path = "crates/serialwarp-vdisp" }
+serialwarp-capture = { path = "crates/serialwarp-capture" }
+serialwarp-encode = { path = "crates/serialwarp-encode" }
