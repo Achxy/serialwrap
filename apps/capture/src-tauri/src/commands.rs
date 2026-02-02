@@ -3,7 +3,9 @@ use std::sync::Arc;
 use std::time::Instant;
 use tauri::{AppHandle, Emitter, State};
 
+use nusb;
 use serialwarp_capture::CaptureStream;
+use serialwarp_core;
 use serialwarp_encode::Encoder;
 use serialwarp_transport::{Transport, UsbTransport};
 use serialwarp_vdisp::VirtualDisplay;
@@ -11,7 +13,7 @@ use serialwarp_vdisp::VirtualDisplay;
 use base64::Engine as _;
 
 use crate::state::{
-    AppSettings, AppState, ConnectionStatus, DisplayInfo, StreamConfig, StreamStats, UsbDeviceInfo,
+    AppSettings, AppState, ConnectionStatus, DebugInfo, DisplayInfo, StreamConfig, StreamStats, UsbDeviceInfo,
 };
 
 /// List available displays on the system
@@ -79,6 +81,13 @@ pub async fn connect_transport(state: State<'_, Arc<AppState>>) -> Result<(), St
     *status = ConnectionStatus::Connecting;
     drop(status);
 
+    // Store debug info about the connection attempt
+    let debug_info = get_usb_debug_info();
+    {
+        let mut last_error = state.last_error.lock().await;
+        *last_error = None;
+    }
+
     match UsbTransport::open().await {
         Ok(transport) => {
             let mut t = state.transport.lock().await;
@@ -88,11 +97,90 @@ pub async fn connect_transport(state: State<'_, Arc<AppState>>) -> Result<(), St
             Ok(())
         }
         Err(e) => {
+            let error_msg = match &e {
+                serialwarp_core::TransportError::DeviceNotFound => {
+                    format!(
+                        "No supported USB link cable found.\n\nSupported devices:\n  - Prolific PL27A1 (067B:27A1)\n  - Genesys GL3523 (05E3:0751)\n  - VIA VL822 (2109:0822)\n\nConnected USB devices:\n{}",
+                        debug_info.connected_devices.iter()
+                            .map(|d| format!("  - {} ({:04X}:{:04X})", d.name, d.vendor_id, d.product_id))
+                            .collect::<Vec<_>>()
+                            .join("\n")
+                    )
+                }
+                _ => format!("Connection failed: {:?}", e),
+            };
+
+            {
+                let mut last_error = state.last_error.lock().await;
+                *last_error = Some(error_msg.clone());
+            }
+
             let mut status = state.connection_status.lock().await;
             *status = ConnectionStatus::Error;
-            Err(format!("Failed to connect: {:?}", e))
+            Err(error_msg)
         }
     }
+}
+
+/// Get USB debug information
+fn get_usb_debug_info() -> DebugInfo {
+    let mut connected_devices = Vec::new();
+
+    if let Ok(devices) = nusb::list_devices() {
+        for device_info in devices {
+            let vid = device_info.vendor_id();
+            let pid = device_info.product_id();
+            let name = device_info
+                .product_string()
+                .or_else(|| device_info.manufacturer_string())
+                .unwrap_or("Unknown Device")
+                .to_string();
+
+            connected_devices.push(UsbDeviceInfo {
+                name,
+                vendor_id: vid,
+                product_id: pid,
+            });
+        }
+    }
+
+    DebugInfo {
+        connected_devices,
+        supported_devices: vec![
+            UsbDeviceInfo {
+                name: "Prolific PL27A1".to_string(),
+                vendor_id: 0x067B,
+                product_id: 0x27A1,
+            },
+            UsbDeviceInfo {
+                name: "Genesys GL3523".to_string(),
+                vendor_id: 0x05E3,
+                product_id: 0x0751,
+            },
+            UsbDeviceInfo {
+                name: "VIA VL822".to_string(),
+                vendor_id: 0x2109,
+                product_id: 0x0822,
+            },
+        ],
+        last_error: None,
+    }
+}
+
+/// Get debug information about USB devices and connection state
+#[tauri::command]
+pub async fn get_debug_info(state: State<'_, Arc<AppState>>) -> Result<DebugInfo, String> {
+    let mut info = get_usb_debug_info();
+    let last_error = state.last_error.lock().await;
+    info.last_error = last_error.clone();
+    Ok(info)
+}
+
+/// Get the last connection error message
+#[tauri::command]
+pub async fn get_last_error(state: State<'_, Arc<AppState>>) -> Result<Option<String>, String> {
+    let last_error = state.last_error.lock().await;
+    Ok(last_error.clone())
 }
 
 /// Disconnect from USB transport

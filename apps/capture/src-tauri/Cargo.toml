@@ -23,6 +23,9 @@ tracing-subscriber = { version = "0.3", features = ["env-filter"] }
 base64 = "0.22"
 image = { version = "0.25", default-features = false, features = ["jpeg"] }
 
+# USB device enumeration
+nusb = "0.1.9"
+
 # Serialwarp crates
 serialwarp-core = { path = "../../../crates/serialwarp-core" }
 serialwarp-capture = { path = "../../../crates/serialwarp-capture" }

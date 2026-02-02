@@ -23,6 +23,8 @@ pub fn run() {
             commands::get_stream_stats,
             commands::get_settings,
             commands::save_settings,
+            commands::get_debug_info,
+            commands::get_last_error,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

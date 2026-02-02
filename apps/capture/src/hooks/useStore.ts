@@ -42,6 +42,18 @@ export interface AppSettings {
   preview_quality: number;
 }
 
+export interface UsbDeviceInfo {
+  name: string;
+  vendor_id: number;
+  product_id: number;
+}
+
+export interface DebugInfo {
+  connected_devices: UsbDeviceInfo[];
+  supported_devices: UsbDeviceInfo[];
+  last_error: string | null;
+}
+
 interface AppStore {
   // Connection state
   connectionStatus: ConnectionStatus;
@@ -70,6 +82,14 @@ interface AppStore {
   // UI state
   settingsOpen: boolean;
   setSettingsOpen: (open: boolean) => void;
+
+  // Debug state
+  debugOpen: boolean;
+  setDebugOpen: (open: boolean) => void;
+  lastError: string | null;
+  setLastError: (error: string | null) => void;
+  debugInfo: DebugInfo | null;
+  setDebugInfo: (info: DebugInfo | null) => void;
 }
 
 export const useStore = create<AppStore>((set) => ({
@@ -124,4 +144,12 @@ export const useStore = create<AppStore>((set) => ({
   // UI state
   settingsOpen: false,
   setSettingsOpen: (open) => set({ settingsOpen: open }),
+
+  // Debug state
+  debugOpen: false,
+  setDebugOpen: (open) => set({ debugOpen: open }),
+  lastError: null,
+  setLastError: (error) => set({ lastError: error }),
+  debugInfo: null,
+  setDebugInfo: (info) => set({ debugInfo: info }),
 }));

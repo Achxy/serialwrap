@@ -1,7 +1,7 @@
 import { useEffect, useCallback, useRef } from "react";
 import { invoke } from "@tauri-apps/api/core";
 import { listen } from "@tauri-apps/api/event";
-import { useStore, ConnectionStatus, StreamStats, AppSettings } from "./hooks/useStore";
+import { useStore, StreamStats, AppSettings, DebugInfo } from "./hooks/useStore";
 import { Button } from "./components/ui/button";
 import { Select } from "./components/ui/select";
 import { Card, CardContent } from "./components/ui/card";
@@ -46,6 +46,12 @@ function App() {
     setSettings,
     settingsOpen,
     setSettingsOpen,
+    debugOpen,
+    setDebugOpen,
+    lastError,
+    setLastError,
+    debugInfo,
+    setDebugInfo,
   } = useStore();
 
   const statsIntervalRef = useRef<number | null>(null);
@@ -128,11 +134,22 @@ function App() {
   const handleConnect = useCallback(async () => {
     try {
       setConnectionStatus("connecting");
+      setLastError(null);
       await invoke("connect_transport");
       setConnectionStatus("connected");
     } catch (e) {
       console.error("Connection failed:", e);
+      const errorMsg = typeof e === "string" ? e : String(e);
+      setLastError(errorMsg);
       setConnectionStatus("error");
+      // Fetch debug info for troubleshooting
+      try {
+        const info = await invoke<DebugInfo>("get_debug_info");
+        setDebugInfo(info);
+        setDebugOpen(true);
+      } catch {
+        // Ignore debug info fetch errors
+      }
     }
   }, []);
 
@@ -144,17 +161,6 @@ function App() {
       console.error("Disconnect failed:", e);
     }
   }, []);
-
-  const handleCreateVirtualDisplay = useCallback(async () => {
-    try {
-      const id = await invoke<number>("create_virtual_display", {
-        config: streamConfig,
-      });
-      setVirtualDisplayId(id);
-    } catch (e) {
-      console.error("Failed to create virtual display:", e);
-    }
-  }, [streamConfig]);
 
   const handleStartStreaming = useCallback(async () => {
     try {
@@ -243,6 +249,14 @@ function App() {
       <div className="flex items-center gap-2 text-sm">
         <span className={`status-dot ${getStatusClass()}`} />
         <span>Status: {getStatusText()}</span>
+        {connectionStatus === "error" && lastError && (
+          <button
+            className="text-destructive underline ml-2"
+            onClick={() => setDebugOpen(true)}
+          >
+            (click for details)
+          </button>
+        )}
         {virtualDisplayId && (
           <span className="text-muted-foreground ml-4">
             Virtual Display ID: {virtualDisplayId}
@@ -318,6 +332,17 @@ function App() {
         <Button variant="ghost" onClick={() => setSettingsOpen(true)}>
           Settings
         </Button>
+        <Button variant="ghost" onClick={async () => {
+          try {
+            const info = await invoke<DebugInfo>("get_debug_info");
+            setDebugInfo(info);
+          } catch {
+            // Ignore errors
+          }
+          setDebugOpen(true);
+        }}>
+          Debug
+        </Button>
       </div>
 
       {/* Settings Dialog */}
@@ -327,6 +352,70 @@ function App() {
         settings={settings}
         onSave={handleSaveSettings}
       />
+
+      {/* Debug Panel */}
+      {debugOpen && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <Card className="w-[600px] max-h-[80vh] overflow-auto">
+            <CardContent className="p-6">
+              <div className="flex justify-between items-center mb-4">
+                <h2 className="text-lg font-semibold">Debug Information</h2>
+                <Button variant="ghost" size="sm" onClick={() => setDebugOpen(false)}>
+                  ✕
+                </Button>
+              </div>
+
+              {lastError && (
+                <div className="mb-4 p-3 bg-destructive/10 border border-destructive/20 rounded-md">
+                  <h3 className="font-medium text-destructive mb-2">Error Details</h3>
+                  <pre className="text-sm whitespace-pre-wrap font-mono">{lastError}</pre>
+                </div>
+              )}
+
+              {debugInfo && (
+                <>
+                  <div className="mb-4">
+                    <h3 className="font-medium mb-2">Supported USB Devices</h3>
+                    <div className="text-sm text-muted-foreground space-y-1">
+                      {debugInfo.supported_devices.map((d, i) => (
+                        <div key={i} className="font-mono">
+                          {d.name} ({d.vendor_id.toString(16).padStart(4, "0").toUpperCase()}:
+                          {d.product_id.toString(16).padStart(4, "0").toUpperCase()})
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="mb-4">
+                    <h3 className="font-medium mb-2">Connected USB Devices</h3>
+                    {debugInfo.connected_devices.length === 0 ? (
+                      <p className="text-sm text-muted-foreground">No USB devices detected</p>
+                    ) : (
+                      <div className="text-sm text-muted-foreground space-y-1">
+                        {debugInfo.connected_devices.map((d, i) => (
+                          <div key={i} className="font-mono">
+                            {d.name} ({d.vendor_id.toString(16).padStart(4, "0").toUpperCase()}:
+                            {d.product_id.toString(16).padStart(4, "0").toUpperCase()})
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </>
+              )}
+
+              <div className="flex justify-end gap-2 mt-4">
+                <Button variant="outline" onClick={() => setDebugOpen(false)}>
+                  Close
+                </Button>
+                <Button onClick={handleConnect}>
+                  Retry Connection
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      )}
     </div>
   );
 }

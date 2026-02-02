@@ -71,6 +71,14 @@ impl Default for StreamConfig {
     }
 }
 
+/// Debug information for troubleshooting
+#[derive(Debug, Clone, Serialize, Deserialize, Default)]
+pub struct DebugInfo {
+    pub connected_devices: Vec<UsbDeviceInfo>,
+    pub supported_devices: Vec<UsbDeviceInfo>,
+    pub last_error: Option<String>,
+}
+
 /// Application settings (persisted)
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct AppSettings {
@@ -120,6 +128,7 @@ pub struct AppState {
     pub connection_status: Mutex<ConnectionStatus>,
     pub settings: Mutex<AppSettings>,
     pub current_config: Mutex<StreamConfig>,
+    pub last_error: Mutex<Option<String>>,
 
     // Atomic counters for stats
     pub frames_captured: AtomicU64,
@@ -138,6 +147,7 @@ impl Default for AppState {
             connection_status: Mutex::new(ConnectionStatus::Disconnected),
             settings: Mutex::new(AppSettings::default()),
             current_config: Mutex::new(StreamConfig::default()),
+            last_error: Mutex::new(None),
             frames_captured: AtomicU64::new(0),
             frames_encoded: AtomicU64::new(0),
             frames_sent: AtomicU64::new(0),
