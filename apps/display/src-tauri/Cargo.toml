@@ -1,0 +1,35 @@
+[package]
+name = "serialwarp-display-app"
+version = "0.1.0"
+description = "SerialWarp Display - Windows video display application"
+authors = ["SerialWarp"]
+edition = "2021"
+
+[lib]
+name = "serialwarp_display_app_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = [] }
+tauri-plugin-store = "2"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+tokio = { version = "1.35", features = ["full"] }
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+base64 = "0.22"
+wgpu = "0.19"
+bytemuck = { version = "1.14", features = ["derive"] }
+raw-window-handle = "0.6"
+
+# Serialwarp crates
+serialwarp-core = { path = "../../../crates/serialwarp-core" }
+serialwarp-transport = { path = "../../../crates/serialwarp-transport" }
+serialwarp-decode = { path = "../../../crates/serialwarp-decode" }
+
+[features]
+default = ["custom-protocol"]
+custom-protocol = ["tauri/custom-protocol"]

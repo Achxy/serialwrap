@@ -1,6 +1,12 @@
 [workspace]
 resolver = "2"
-members = ["crates/*", "bins/*", "tests/integration"]
+members = [
+    "crates/*",
+    "bins/*",
+    "tests/integration",
+    "apps/capture/src-tauri",
+    "apps/display/src-tauri",
+]
 
 [workspace.package]
 version = "0.1.0"
