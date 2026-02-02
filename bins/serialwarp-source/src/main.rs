@@ -10,8 +10,18 @@ use bytes::Bytes;
 use clap::Parser;
 use std::sync::atomic::{AtomicU16, Ordering};
 use std::sync::Arc;
+use std::time::Duration;
 use tracing::{error, info, warn};
 use tracing_subscriber::EnvFilter;
+
+/// Time to wait for virtual display to initialize
+const DISPLAY_INIT_DELAY: Duration = Duration::from_millis(500);
+
+/// Polling interval when waiting for credits
+const CREDIT_POLL_INTERVAL: Duration = Duration::from_micros(100);
+
+/// Timeout for waiting for STOP_ACK during shutdown
+const STOP_ACK_TIMEOUT: Duration = Duration::from_secs(1);
 
 use serialwarp_capture::{CaptureConfig, CaptureStream};
 use serialwarp_core::{
@@ -77,7 +87,7 @@ async fn main() -> Result<()> {
 
     // Step 2: Wait for system to recognize display
     info!("Waiting for display to initialize...");
-    tokio::time::sleep(std::time::Duration::from_millis(500)).await;
+    tokio::time::sleep(DISPLAY_INIT_DELAY).await;
 
     // Step 3: Open USB transport
     info!("Opening USB transport...");
@@ -221,7 +231,7 @@ async fn run_source<T: Transport + 'static>(transport: T, args: &Args, display_i
     while transport_clone.is_connected() {
         // Wait for credits
         while credits.load(Ordering::SeqCst) == 0 {
-            tokio::time::sleep(std::time::Duration::from_micros(100)).await;
+            tokio::time::sleep(CREDIT_POLL_INTERVAL).await;
             if !transport_clone.is_connected() {
                 break;
             }
@@ -277,7 +287,7 @@ async fn run_source<T: Transport + 'static>(transport: T, args: &Args, display_i
 
     // Wait for STOP_ACK
     match tokio::time::timeout(
-        std::time::Duration::from_secs(1),
+        STOP_ACK_TIMEOUT,
         receive_packet(transport_clone.as_ref()),
     )
     .await

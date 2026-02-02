@@ -3,9 +3,8 @@ use std::sync::Arc;
 use std::time::Instant;
 use tauri::{AppHandle, Emitter, State};
 
-use nusb;
 use serialwarp_capture::CaptureStream;
-use serialwarp_core;
+use serialwarp_core::SUPPORTED_USB_DEVICES;
 use serialwarp_encode::Encoder;
 use serialwarp_transport::{Transport, UsbTransport};
 use serialwarp_vdisp::VirtualDisplay;
@@ -52,25 +51,14 @@ pub async fn list_displays() -> Result<Vec<DisplayInfo>, String> {
 /// List connected USB devices that could be used for transport
 #[tauri::command]
 pub async fn list_usb_devices() -> Result<Vec<UsbDeviceInfo>, String> {
-    // For now, return a list of known supported devices
-    // In a full implementation, we'd enumerate actual connected devices
-    let supported = vec![
-        UsbDeviceInfo {
-            name: "Prolific PL27A1".to_string(),
-            vendor_id: 0x067B,
-            product_id: 0x27A1,
-        },
-        UsbDeviceInfo {
-            name: "Genesys GL3523".to_string(),
-            vendor_id: 0x05E3,
-            product_id: 0x0751,
-        },
-        UsbDeviceInfo {
-            name: "VIA VL822".to_string(),
-            vendor_id: 0x2109,
-            product_id: 0x0822,
-        },
-    ];
+    let supported = SUPPORTED_USB_DEVICES
+        .iter()
+        .map(|d| UsbDeviceInfo {
+            name: d.name.to_string(),
+            vendor_id: d.vendor_id,
+            product_id: d.product_id,
+        })
+        .collect();
     Ok(supported)
 }
 
@@ -146,23 +134,14 @@ fn get_usb_debug_info() -> DebugInfo {
 
     DebugInfo {
         connected_devices,
-        supported_devices: vec![
-            UsbDeviceInfo {
-                name: "Prolific PL27A1".to_string(),
-                vendor_id: 0x067B,
-                product_id: 0x27A1,
-            },
-            UsbDeviceInfo {
-                name: "Genesys GL3523".to_string(),
-                vendor_id: 0x05E3,
-                product_id: 0x0751,
-            },
-            UsbDeviceInfo {
-                name: "VIA VL822".to_string(),
-                vendor_id: 0x2109,
-                product_id: 0x0822,
-            },
-        ],
+        supported_devices: SUPPORTED_USB_DEVICES
+            .iter()
+            .map(|d| UsbDeviceInfo {
+                name: d.name.to_string(),
+                vendor_id: d.vendor_id,
+                product_id: d.product_id,
+            })
+            .collect(),
         last_error: None,
     }
 }

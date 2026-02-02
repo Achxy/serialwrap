@@ -36,10 +36,22 @@ impl EncodedFrame {
 
     /// Split frame into segments for transmission
     /// Each segment is at most MAX_SEGMENT_SIZE bytes
+    ///
+    /// # Panics
+    /// Panics if frame data exceeds ~4GB (u16::MAX * MAX_SEGMENT_SIZE)
     pub fn into_segments(self) -> Vec<FrameSegment> {
         let total_size = self.data.len();
         let segment_count = (total_size + MAX_SEGMENT_SIZE - 1) / MAX_SEGMENT_SIZE;
-        let segment_count = segment_count.max(1) as u16;
+        let segment_count = segment_count.max(1);
+
+        // Validate segment count fits in u16
+        assert!(
+            segment_count <= u16::MAX as usize,
+            "Frame too large: requires {} segments (max {})",
+            segment_count,
+            u16::MAX
+        );
+        let segment_count = segment_count as u16;
 
         if segment_count == 1 {
             return vec![FrameSegment {

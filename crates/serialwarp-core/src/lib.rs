@@ -7,7 +7,9 @@
 pub mod error;
 pub mod frame;
 pub mod protocol;
+pub mod usb;
 
 pub use error::*;
 pub use frame::*;
 pub use protocol::*;
+pub use usb::*;

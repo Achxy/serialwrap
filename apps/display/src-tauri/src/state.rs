@@ -3,7 +3,6 @@ use std::sync::atomic::{AtomicBool, AtomicU64, Ordering};
 use std::time::Instant;
 use tokio::sync::Mutex;
 
-use serialwarp_decode::Decoder;
 use serialwarp_transport::UsbTransport;
 
 /// USB device information for the UI
@@ -70,38 +69,17 @@ impl Default for AppSettings {
     }
 }
 
-/// Internal receiving state - stored separately to avoid Send/Sync issues
+/// Internal receiving state
+/// Note: Decoder is created locally in the blocking task, not stored here
+#[derive(Default)]
 pub struct ReceivingState {
-    pub decoder: Option<Decoder>,
     pub start_time: Option<Instant>,
-    pub last_decode_time_us: u64,
     pub params: Option<NegotiatedParams>,
 }
 
-impl Default for ReceivingState {
-    fn default() -> Self {
-        Self {
-            decoder: None,
-            start_time: None,
-            last_decode_time_us: 0,
-            params: None,
-        }
-    }
-}
-
-// Unsafe impl because we manage thread safety ourselves via Mutex
-unsafe impl Send for ReceivingState {}
-unsafe impl Sync for ReceivingState {}
-
-/// Transport wrapper for thread safety
-pub struct TransportWrapper(pub Option<UsbTransport>);
-
-unsafe impl Send for TransportWrapper {}
-unsafe impl Sync for TransportWrapper {}
-
 /// Main application state
 pub struct AppState {
-    pub transport: Mutex<TransportWrapper>,
+    pub transport: Mutex<Option<UsbTransport>>,
     pub receiving: Mutex<ReceivingState>,
     pub connection_status: Mutex<ConnectionStatus>,
     pub settings: Mutex<AppSettings>,
@@ -120,7 +98,7 @@ pub struct AppState {
 impl Default for AppState {
     fn default() -> Self {
         Self {
-            transport: Mutex::new(TransportWrapper(None)),
+            transport: Mutex::new(None),
             receiving: Mutex::new(ReceivingState::default()),
             connection_status: Mutex::new(ConnectionStatus::Disconnected),
             settings: Mutex::new(AppSettings::default()),
@@ -150,10 +128,12 @@ impl AppState {
         self.total_latency_us.store(0, Ordering::SeqCst);
     }
 
+    #[allow(dead_code)]
     pub fn add_decode_time(&self, time_us: u64) {
         self.total_decode_time_us.fetch_add(time_us, Ordering::SeqCst);
     }
 
+    #[allow(dead_code)]
     pub fn add_latency(&self, latency_us: u64) {
         self.total_latency_us.fetch_add(latency_us, Ordering::SeqCst);
     }

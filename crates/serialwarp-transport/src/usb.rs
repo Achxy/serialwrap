@@ -8,17 +8,10 @@ use async_trait::async_trait;
 use bytes::Bytes;
 use nusb::transfer::RequestBuffer;
 use nusb::Device;
-use serialwarp_core::TransportError;
+use serialwarp_core::{TransportError, SUPPORTED_USB_DEVICES};
 use tokio::sync::Mutex;
 
 use crate::Transport;
-
-/// Supported USB link cable chips
-const SUPPORTED_DEVICES: &[(u16, u16, &str)] = &[
-    (0x067B, 0x27A1, "Prolific PL27A1"),
-    (0x05E3, 0x0751, "Genesys GL3523"),
-    (0x2109, 0x0822, "VIA VL822"),
-];
 
 /// USB OUT endpoint address
 const ENDPOINT_OUT: u8 = 0x01;
@@ -55,13 +48,19 @@ impl UsbTransport {
             let vid = device_info.vendor_id();
             let pid = device_info.product_id();
 
-            for &(supported_vid, supported_pid, name) in SUPPORTED_DEVICES {
-                if vid == supported_vid && pid == supported_pid {
-                    tracing::info!("Found {} (VID: 0x{:04X}, PID: 0x{:04X})", name, vid, pid);
-                    return device_info
-                        .open()
-                        .map_err(|e| TransportError::UsbError(e.to_string()));
-                }
+            if let Some(supported) = SUPPORTED_USB_DEVICES
+                .iter()
+                .find(|d| d.vendor_id == vid && d.product_id == pid)
+            {
+                tracing::info!(
+                    "Found {} (VID: 0x{:04X}, PID: 0x{:04X})",
+                    supported.name,
+                    vid,
+                    pid
+                );
+                return device_info
+                    .open()
+                    .map_err(|e| TransportError::UsbError(e.to_string()));
             }
         }
 
@@ -146,9 +145,9 @@ mod tests {
 
     #[test]
     fn test_supported_devices() {
-        assert_eq!(SUPPORTED_DEVICES.len(), 3);
-        assert!(SUPPORTED_DEVICES
+        assert_eq!(SUPPORTED_USB_DEVICES.len(), 3);
+        assert!(SUPPORTED_USB_DEVICES
             .iter()
-            .any(|(vid, pid, _)| *vid == 0x067B && *pid == 0x27A1));
+            .any(|d| d.vendor_id == 0x067B && d.product_id == 0x27A1));
     }
 }

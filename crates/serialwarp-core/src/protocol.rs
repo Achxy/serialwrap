@@ -345,17 +345,36 @@ impl StartPayload {
         }
 
         let mut buf = data;
+        let width = buf.get_u32_le();
+        let height = buf.get_u32_le();
+        let fps_fixed = buf.get_u32_le();
+        let bitrate_bps = buf.get_u32_le();
+        let pixel_format = buf.get_u8();
+        let audio_enabled = buf.get_u8();
+        let audio_sample_rate = buf.get_u16_le();
+        let audio_channels = buf.get_u8();
+        let audio_bits = buf.get_u8();
+        let reserved = buf.get_u16_le();
+
+        // Validate dimensions
+        if width == 0 || height == 0 {
+            return Err(ProtocolError::InvalidPayloadLength {
+                expected: 1, // minimum dimension
+                actual: 0,
+            });
+        }
+
         Ok(Self {
-            width: buf.get_u32_le(),
-            height: buf.get_u32_le(),
-            fps_fixed: buf.get_u32_le(),
-            bitrate_bps: buf.get_u32_le(),
-            pixel_format: buf.get_u8(),
-            audio_enabled: buf.get_u8(),
-            audio_sample_rate: buf.get_u16_le(),
-            audio_channels: buf.get_u8(),
-            audio_bits: buf.get_u8(),
-            reserved: buf.get_u16_le(),
+            width,
+            height,
+            fps_fixed,
+            bitrate_bps,
+            pixel_format,
+            audio_enabled,
+            audio_sample_rate,
+            audio_channels,
+            audio_bits,
+            reserved,
         })
     }
 
@@ -470,13 +489,33 @@ impl FrameHeader {
         }
 
         let mut buf = data;
+        let frame_number = buf.get_u64_le();
+        let pts_us = buf.get_u64_le();
+        let capture_ts_us = buf.get_u64_le();
+        let frame_size = buf.get_u32_le();
+        let segment_index = buf.get_u16_le();
+        let segment_count = buf.get_u16_le();
+
+        // Validate segment_index < segment_count
+        if segment_count == 0 {
+            return Err(ProtocolError::FrameReassemblyError(
+                "segment_count cannot be zero".to_string(),
+            ));
+        }
+        if segment_index >= segment_count {
+            return Err(ProtocolError::FrameReassemblyError(format!(
+                "segment_index ({}) must be less than segment_count ({})",
+                segment_index, segment_count
+            )));
+        }
+
         Ok(Self {
-            frame_number: buf.get_u64_le(),
-            pts_us: buf.get_u64_le(),
-            capture_ts_us: buf.get_u64_le(),
-            frame_size: buf.get_u32_le(),
-            segment_index: buf.get_u16_le(),
-            segment_count: buf.get_u16_le(),
+            frame_number,
+            pts_us,
+            capture_ts_us,
+            frame_size,
+            segment_index,
+            segment_count,
         })
     }
 }

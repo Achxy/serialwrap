@@ -104,20 +104,11 @@ impl Default for AppSettings {
 }
 
 /// Internal streaming state
+#[derive(Default)]
 pub struct StreamingState {
     pub capture_stream: Option<CaptureStream>,
     pub encoder: Option<Encoder>,
     pub start_time: Option<Instant>,
-}
-
-impl Default for StreamingState {
-    fn default() -> Self {
-        Self {
-            capture_stream: None,
-            encoder: None,
-            start_time: None,
-        }
-    }
 }
 
 /// Main application state

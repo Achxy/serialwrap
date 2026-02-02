@@ -3,11 +3,16 @@
 //! This binary runs on the PC side and receives video from the Mac source,
 //! decoding and rendering it to a window.
 
+use std::time::Duration;
+
 use anyhow::{Context, Result};
 use bytes::Bytes;
 use clap::Parser;
 use tracing::{error, info, warn};
 use tracing_subscriber::EnvFilter;
+
+/// Timeout for packet receive polling (allows event loop processing)
+const PACKET_POLL_TIMEOUT: Duration = Duration::from_millis(10);
 
 use serialwarp_core::{
     FrameAckPayload, FrameHeader, FrameReassembler, HelloPayload, Packet, PacketType,
@@ -170,7 +175,7 @@ async fn run_sink<T: Transport>(transport: T, args: &Args) -> Result<()> {
 
         // Try to receive a packet (non-blocking would be better, but for now we use timeout)
         match tokio::time::timeout(
-            std::time::Duration::from_millis(10),
+            PACKET_POLL_TIMEOUT,
             receive_packet(&transport),
         )
         .await
@@ -250,12 +255,13 @@ async fn run_sink<T: Transport>(transport: T, args: &Args) -> Result<()> {
                     }
                     PacketType::Ping => {
                         // Respond with PONG
+                        let now_us = std::time::SystemTime::now()
+                            .duration_since(std::time::UNIX_EPOCH)
+                            .unwrap_or_default()
+                            .as_micros() as u64;
                         let pong_payload = serialwarp_core::PongPayload::new(
                             serialwarp_core::PingPayload::parse(&packet.payload)?.timestamp_us,
-                            std::time::SystemTime::now()
-                                .duration_since(std::time::UNIX_EPOCH)
-                                .unwrap()
-                                .as_micros() as u64,
+                            now_us,
                         );
                         let pong = Packet::new(
                             PacketType::Pong,

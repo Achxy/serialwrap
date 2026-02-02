@@ -1,40 +1,32 @@
 use std::sync::atomic::Ordering;
 use std::sync::Arc;
-use std::time::Instant;
+use std::time::{Duration, Instant};
 use tauri::{AppHandle, State, WebviewWindow};
 
 use serialwarp_core::frame::FrameReassembler;
+use serialwarp_core::SUPPORTED_USB_DEVICES;
 use serialwarp_decode::{Decoder, DecoderConfig};
 use serialwarp_transport::{Transport, UsbTransport};
 
-#[allow(unused_imports)]
-use tracing;
+/// Simulated frame interval (~60fps)
+const FRAME_INTERVAL: Duration = Duration::from_millis(16);
+
 
 use crate::state::{
-    AppSettings, AppState, ConnectionStatus, DisplayStats, NegotiatedParams, TransportWrapper,
-    UsbDeviceInfo,
+    AppSettings, AppState, ConnectionStatus, DisplayStats, NegotiatedParams, UsbDeviceInfo,
 };
 
 /// List supported USB devices
 #[tauri::command]
 pub async fn list_usb_devices() -> Result<Vec<UsbDeviceInfo>, String> {
-    let supported = vec![
-        UsbDeviceInfo {
-            name: "Prolific PL27A1".to_string(),
-            vendor_id: 0x067B,
-            product_id: 0x27A1,
-        },
-        UsbDeviceInfo {
-            name: "Genesys GL3523".to_string(),
-            vendor_id: 0x05E3,
-            product_id: 0x0751,
-        },
-        UsbDeviceInfo {
-            name: "VIA VL822".to_string(),
-            vendor_id: 0x2109,
-            product_id: 0x0822,
-        },
-    ];
+    let supported = SUPPORTED_USB_DEVICES
+        .iter()
+        .map(|d| UsbDeviceInfo {
+            name: d.name.to_string(),
+            vendor_id: d.vendor_id,
+            product_id: d.product_id,
+        })
+        .collect();
     Ok(supported)
 }
 
@@ -68,7 +60,7 @@ pub async fn wait_for_connection(
     // Store transport
     {
         let mut t = state.transport.lock().await;
-        *t = TransportWrapper(Some(transport));
+        *t = Some(transport);
     }
 
     // In a full implementation, we'd wait for HELLO packet and send HELLO_ACK
@@ -80,10 +72,9 @@ pub async fn wait_for_connection(
         bitrate_bps: 20_000_000,
     };
 
-    // Store receiving state (decoder will be created lazily in receiving_loop)
+    // Store receiving state (decoder will be created in receiving_loop's blocking task)
     {
         let mut receiving = state.receiving.lock().await;
-        receiving.decoder = None; // Will be created in receiving_loop
         receiving.params = Some(params.clone());
         receiving.start_time = Some(Instant::now());
     }
@@ -106,7 +97,7 @@ pub async fn disconnect(state: State<'_, Arc<AppState>>) -> Result<(), String> {
     // Close transport
     {
         let mut transport = state.transport.lock().await;
-        if let Some(t) = transport.0.take() {
+        if let Some(t) = transport.take() {
             t.close().await;
         }
     }
@@ -114,7 +105,6 @@ pub async fn disconnect(state: State<'_, Arc<AppState>>) -> Result<(), String> {
     // Clear receiving state
     {
         let mut receiving = state.receiving.lock().await;
-        receiving.decoder = None;
         receiving.params = None;
         receiving.start_time = None;
     }
@@ -201,7 +191,7 @@ async fn receiving_loop(state: Arc<AppState>) {
             // 4. Send decoded frame to frontend for display via channel
 
             // Simulated delay
-            std::thread::sleep(std::time::Duration::from_millis(16));
+            std::thread::sleep(FRAME_INTERVAL);
         }
     })
     .await;
@@ -209,7 +199,7 @@ async fn receiving_loop(state: Arc<AppState>) {
     // Update status when loop ends
     let transport = state.transport.lock().await;
     let mut status = state.connection_status.lock().await;
-    *status = if transport.0.is_some() {
+    *status = if transport.is_some() {
         ConnectionStatus::Connected
     } else {
         ConnectionStatus::Disconnected
@@ -224,7 +214,7 @@ pub async fn stop_display(state: State<'_, Arc<AppState>>) -> Result<(), String>
     // Update status
     let transport = state.transport.lock().await;
     let mut status = state.connection_status.lock().await;
-    *status = if transport.0.is_some() {
+    *status = if transport.is_some() {
         ConnectionStatus::Connected
     } else {
         ConnectionStatus::Disconnected
