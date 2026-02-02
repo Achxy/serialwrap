@@ -64,3 +64,7 @@ dist/
 *.tmp
 *.temp
 .cache/
+
+# Tauri signing keys
+.tauri-keys
+.tauri-keys.pub

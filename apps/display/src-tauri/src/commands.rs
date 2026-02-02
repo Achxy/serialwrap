@@ -1,7 +1,7 @@
 use std::sync::atomic::Ordering;
 use std::sync::Arc;
 use std::time::Instant;
-use tauri::{AppHandle, Emitter, State, WebviewWindow};
+use tauri::{AppHandle, State, WebviewWindow};
 
 use serialwarp_core::frame::FrameReassembler;
 use serialwarp_decode::{Decoder, DecoderConfig};

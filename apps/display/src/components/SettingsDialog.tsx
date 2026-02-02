@@ -1,4 +1,8 @@
 import { useState, useEffect } from "react";
+import { check } from "@tauri-apps/plugin-updater";
+import { ask } from "@tauri-apps/plugin-dialog";
+import { relaunch } from "@tauri-apps/plugin-process";
+import { getVersion } from "@tauri-apps/api/app";
 import {
   Dialog,
   DialogContent,
@@ -37,10 +41,63 @@ export function SettingsDialog({
   onSave,
 }: SettingsDialogProps) {
   const [localSettings, setLocalSettings] = useState(settings);
+  const [currentVersion, setCurrentVersion] = useState("");
+  const [updateStatus, setUpdateStatus] = useState<"idle" | "checking" | "available" | "downloading" | "uptodate" | "error">("idle");
+  const [updateError, setUpdateError] = useState<string | null>(null);
+  const [updateVersion, setUpdateVersion] = useState<string | null>(null);
 
   useEffect(() => {
     setLocalSettings(settings);
   }, [settings]);
+
+  useEffect(() => {
+    getVersion().then(setCurrentVersion).catch(console.error);
+  }, []);
+
+  const handleCheckForUpdates = async () => {
+    setUpdateStatus("checking");
+    setUpdateError(null);
+
+    try {
+      const update = await check();
+
+      if (update) {
+        setUpdateStatus("available");
+        setUpdateVersion(update.version);
+
+        const shouldUpdate = await ask(
+          `A new version (${update.version}) is available. Would you like to download and install it?`,
+          { title: "Update Available", kind: "info" }
+        );
+
+        if (shouldUpdate) {
+          setUpdateStatus("downloading");
+
+          await update.downloadAndInstall((progress) => {
+            // Could show progress here
+            console.log("Download progress:", progress);
+          });
+
+          const shouldRelaunch = await ask(
+            "Update installed successfully. Would you like to restart the app now?",
+            { title: "Update Complete", kind: "info" }
+          );
+
+          if (shouldRelaunch) {
+            await relaunch();
+          }
+        } else {
+          setUpdateStatus("idle");
+        }
+      } else {
+        setUpdateStatus("uptodate");
+      }
+    } catch (error) {
+      console.error("Update check failed:", error);
+      setUpdateStatus("error");
+      setUpdateError(error instanceof Error ? error.message : String(error));
+    }
+  };
 
   const handleSave = () => {
     onSave(localSettings);
@@ -130,6 +187,37 @@ export function SettingsDialog({
               className="h-4 w-4 rounded border-input"
             />
             <Label htmlFor="vsync">Enable VSync</Label>
+          </div>
+
+          {/* Updates Section */}
+          <div className="border-t pt-4 mt-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <Label>Software Updates</Label>
+                <p className="text-xs text-muted-foreground">
+                  Current version: {currentVersion || "..."}
+                </p>
+                {updateStatus === "uptodate" && (
+                  <p className="text-xs text-green-600">You're up to date!</p>
+                )}
+                {updateStatus === "available" && updateVersion && (
+                  <p className="text-xs text-blue-600">Version {updateVersion} available</p>
+                )}
+                {updateStatus === "error" && updateError && (
+                  <p className="text-xs text-red-600">{updateError}</p>
+                )}
+              </div>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleCheckForUpdates}
+                disabled={updateStatus === "checking" || updateStatus === "downloading"}
+              >
+                {updateStatus === "checking" ? "Checking..." :
+                 updateStatus === "downloading" ? "Downloading..." :
+                 "Check for Updates"}
+              </Button>
+            </div>
           </div>
         </div>
 
