@@ -46,7 +46,8 @@ jobs:
             > **Warning**: This is pre-release software. Expect bugs and incomplete features.
 
             ### Downloads
-            - **macOS (Capture)**: SerialWarp-Capture_*.dmg
+            - **macOS (Capture)**: SerialWarp-Capture_*.dmg (Apple Silicon)
+            - **macOS (Display)**: SerialWarp-Display_*.dmg (Apple Silicon)
             - **Windows (Display)**: SerialWarp-Display_*.msi or *.exe
             - **Linux (Display)**: SerialWarp-Display_*.AppImage or *.deb
 
@@ -56,7 +57,7 @@ jobs:
             ### Auto-Updates
             After installation, the app will check for updates when you click "Check for Updates" in Settings.
 
-  build-capture-macos-arm64:
+  build-capture-macos:
     needs: create-release
     runs-on: macos-14
     steps:
@@ -103,7 +104,7 @@ jobs:
 
           echo "CODESIGN_KEYCHAIN=$KEYCHAIN_PATH" >> $GITHUB_ENV
 
-      - name: Build Tauri App (ARM64)
+      - name: Build Tauri App
         env:
           TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
           TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
@@ -123,71 +124,6 @@ jobs:
             target/aarch64-apple-darwin/release/bundle/dmg/*.dmg
             target/aarch64-apple-darwin/release/bundle/macos/*.tar.gz
             target/aarch64-apple-darwin/release/bundle/macos/*.tar.gz.sig
-
-  build-capture-macos-x86:
-    needs: create-release
-    runs-on: macos-13
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-
-      - name: Setup Rust
-        uses: dtolnay/rust-toolchain@stable
-        with:
-          targets: x86_64-apple-darwin
-
-      - name: Install dependencies
-        run: |
-          cd apps/capture
-          npm ci
-
-      - name: Setup Apple Certificate
-        env:
-          APPLE_CERTIFICATE: ${{ secrets.APPLE_CERTIFICATE }}
-          APPLE_CERTIFICATE_PASSWORD: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
-        run: |
-          if [ -z "$APPLE_CERTIFICATE" ]; then
-            echo "::warning::APPLE_CERTIFICATE not set, skipping code signing setup"
-            exit 0
-          fi
-
-          CERTIFICATE_PATH=$RUNNER_TEMP/certificate.p12
-          KEYCHAIN_PATH=$RUNNER_TEMP/app-signing.keychain-db
-          KEYCHAIN_PASSWORD=$(openssl rand -base64 32)
-
-          echo "$APPLE_CERTIFICATE" | base64 --decode > "$CERTIFICATE_PATH"
-
-          security create-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
-          security set-keychain-settings -lut 21600 "$KEYCHAIN_PATH"
-          security unlock-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
-
-          security import "$CERTIFICATE_PATH" -P "$APPLE_CERTIFICATE_PASSWORD" -A -t cert -f pkcs12 -k "$KEYCHAIN_PATH"
-          security set-key-partition-list -S apple-tool:,apple: -k "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
-          security list-keychain -d user -s "$KEYCHAIN_PATH"
-
-          echo "CODESIGN_KEYCHAIN=$KEYCHAIN_PATH" >> $GITHUB_ENV
-
-      - name: Build Tauri App (x86_64)
-        env:
-          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
-          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
-          APPLE_SIGNING_IDENTITY: ${{ secrets.APPLE_SIGNING_IDENTITY }}
-        run: |
-          cd apps/capture
-          npm run tauri build -- --target x86_64-apple-darwin
-
-      - name: Upload Release Assets
-        uses: softprops/action-gh-release@v2
-        with:
-          tag_name: ${{ needs.create-release.outputs.version }}
-          files: |
-            target/x86_64-apple-darwin/release/bundle/dmg/*.dmg
-            target/x86_64-apple-darwin/release/bundle/macos/*.tar.gz
-            target/x86_64-apple-darwin/release/bundle/macos/*.tar.gz.sig
 
   build-display-windows:
     needs: create-release
@@ -292,7 +228,7 @@ jobs:
             target/release/bundle/appimage/*.AppImage.tar.gz.sig
             target/release/bundle/deb/*.deb
 
-  build-display-macos-arm64:
+  build-display-macos:
     needs: create-release
     runs-on: macos-14
     steps:
@@ -316,7 +252,7 @@ jobs:
           cd apps/display
           npm ci
 
-      - name: Build Tauri App (ARM64)
+      - name: Build Tauri App
         env:
           TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
           TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
@@ -333,49 +269,8 @@ jobs:
             target/aarch64-apple-darwin/release/bundle/macos/*.tar.gz
             target/aarch64-apple-darwin/release/bundle/macos/*.tar.gz.sig
 
-  build-display-macos-x86:
-    needs: create-release
-    runs-on: macos-13
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-
-      - name: Setup Rust
-        uses: dtolnay/rust-toolchain@stable
-        with:
-          targets: x86_64-apple-darwin
-
-      - name: Install FFmpeg
-        run: brew install ffmpeg pkg-config
-
-      - name: Install dependencies
-        run: |
-          cd apps/display
-          npm ci
-
-      - name: Build Tauri App (x86_64)
-        env:
-          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
-          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
-        run: |
-          cd apps/display
-          npm run tauri build -- --target x86_64-apple-darwin
-
-      - name: Upload Release Assets
-        uses: softprops/action-gh-release@v2
-        with:
-          tag_name: ${{ needs.create-release.outputs.version }}
-          files: |
-            target/x86_64-apple-darwin/release/bundle/dmg/*.dmg
-            target/x86_64-apple-darwin/release/bundle/macos/*.tar.gz
-            target/x86_64-apple-darwin/release/bundle/macos/*.tar.gz.sig
-
   generate-updater-json:
-    needs: [create-release, build-capture-macos-arm64, build-capture-macos-x86, build-display-windows, build-display-linux, build-display-macos-arm64, build-display-macos-x86]
+    needs: [create-release, build-capture-macos, build-display-windows, build-display-linux, build-display-macos]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -394,10 +289,6 @@ jobs:
               "darwin-aarch64": {
                 "signature": "",
                 "url": "https://github.com/${REPO}/releases/download/${VERSION}/SerialWarp-Display_${VERSION}_aarch64.app.tar.gz"
-              },
-              "darwin-x86_64": {
-                "signature": "",
-                "url": "https://github.com/${REPO}/releases/download/${VERSION}/SerialWarp-Display_${VERSION}_x86_64.app.tar.gz"
               },
               "linux-x86_64": {
                 "signature": "",
