@@ -1,0 +1,4 @@
+module SerialWarpFFIFFI {
+    header "SerialWarpFFIFFI.h"
+    export *
+}

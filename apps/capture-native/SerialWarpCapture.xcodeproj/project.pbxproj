@@ -1,0 +1,424 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		A1000001280D7E5D00000001 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000002280D7E5D00000001 /* AppDelegate.swift */; };
+		A1000003280D7E5D00000002 /* MainWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000004280D7E5D00000002 /* MainWindowController.swift */; };
+		A1000005280D7E5D00000003 /* SidebarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000006280D7E5D00000003 /* SidebarViewController.swift */; };
+		A1000007280D7E5D00000004 /* ContentViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000008280D7E5D00000004 /* ContentViewController.swift */; };
+		A1000009280D7E5D00000005 /* DisplaysContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A100000A280D7E5D00000005 /* DisplaysContentView.swift */; };
+		A100000B280D7E5D00000006 /* SettingsCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A100000C280D7E5D00000006 /* SettingsCardView.swift */; };
+		A100000D280D7E5D00000007 /* AppSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A100000E280D7E5D00000007 /* AppSettingsView.swift */; };
+		A100000F280D7E5D00000008 /* AboutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000010280D7E5D00000008 /* AboutView.swift */; };
+		A1000011280D7E5D00000009 /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000012280D7E5D00000009 /* AppState.swift */; };
+		A1000013280D7E5D0000000A /* StreamingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000014280D7E5D0000000A /* StreamingService.swift */; };
+		A1000015280D7E5D0000000B /* ScreenCaptureKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A1000016280D7E5D0000000B /* ScreenCaptureKit.framework */; };
+		A1000017280D7E5D0000000C /* VideoToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A1000018280D7E5D0000000C /* VideoToolbox.framework */; };
+		A1000019280D7E5D0000000D /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A100001A280D7E5D0000000D /* CoreMedia.framework */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		A1000020280D7E5D00000020 /* SerialWarp Capture.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "SerialWarp Capture.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		A1000002280D7E5D00000001 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		A1000004280D7E5D00000002 /* MainWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainWindowController.swift; sourceTree = "<group>"; };
+		A1000006280D7E5D00000003 /* SidebarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidebarViewController.swift; sourceTree = "<group>"; };
+		A1000008280D7E5D00000004 /* ContentViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentViewController.swift; sourceTree = "<group>"; };
+		A100000A280D7E5D00000005 /* DisplaysContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisplaysContentView.swift; sourceTree = "<group>"; };
+		A100000C280D7E5D00000006 /* SettingsCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsCardView.swift; sourceTree = "<group>"; };
+		A100000E280D7E5D00000007 /* AppSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSettingsView.swift; sourceTree = "<group>"; };
+		A1000010280D7E5D00000008 /* AboutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutView.swift; sourceTree = "<group>"; };
+		A1000012280D7E5D00000009 /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
+		A1000014280D7E5D0000000A /* StreamingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamingService.swift; sourceTree = "<group>"; };
+		A1000016280D7E5D0000000B /* ScreenCaptureKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ScreenCaptureKit.framework; path = System/Library/Frameworks/ScreenCaptureKit.framework; sourceTree = SDKROOT; };
+		A1000018280D7E5D0000000C /* VideoToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = VideoToolbox.framework; path = System/Library/Frameworks/VideoToolbox.framework; sourceTree = SDKROOT; };
+		A100001A280D7E5D0000000D /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
+		A100001C280D7E5D0000000E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		A100001D280D7E5D0000000F /* SerialWarpCapture.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SerialWarpCapture.entitlements; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		A100001E280D7E5D00000010 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A1000015280D7E5D0000000B /* ScreenCaptureKit.framework in Frameworks */,
+				A1000017280D7E5D0000000C /* VideoToolbox.framework in Frameworks */,
+				A1000019280D7E5D0000000D /* CoreMedia.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		A1000030280D7E5D00000030 = {
+			isa = PBXGroup;
+			children = (
+				A1000031280D7E5D00000031 /* SerialWarpCapture */,
+				A1000032280D7E5D00000032 /* Frameworks */,
+				A1000033280D7E5D00000033 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		A1000031280D7E5D00000031 /* SerialWarpCapture */ = {
+			isa = PBXGroup;
+			children = (
+				A1000034280D7E5D00000034 /* App */,
+				A1000035280D7E5D00000035 /* Views */,
+				A1000036280D7E5D00000036 /* Models */,
+				A1000037280D7E5D00000037 /* Services */,
+				A1000038280D7E5D00000038 /* Resources */,
+			);
+			path = SerialWarpCapture;
+			sourceTree = "<group>";
+		};
+		A1000032280D7E5D00000032 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				A1000016280D7E5D0000000B /* ScreenCaptureKit.framework */,
+				A1000018280D7E5D0000000C /* VideoToolbox.framework */,
+				A100001A280D7E5D0000000D /* CoreMedia.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		A1000033280D7E5D00000033 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				A1000020280D7E5D00000020 /* SerialWarp Capture.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		A1000034280D7E5D00000034 /* App */ = {
+			isa = PBXGroup;
+			children = (
+				A1000002280D7E5D00000001 /* AppDelegate.swift */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		A1000035280D7E5D00000035 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				A1000004280D7E5D00000002 /* MainWindowController.swift */,
+				A1000006280D7E5D00000003 /* SidebarViewController.swift */,
+				A1000008280D7E5D00000004 /* ContentViewController.swift */,
+				A100000A280D7E5D00000005 /* DisplaysContentView.swift */,
+				A100000C280D7E5D00000006 /* SettingsCardView.swift */,
+				A100000E280D7E5D00000007 /* AppSettingsView.swift */,
+				A1000010280D7E5D00000008 /* AboutView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		A1000036280D7E5D00000036 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				A1000012280D7E5D00000009 /* AppState.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		A1000037280D7E5D00000037 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				A1000014280D7E5D0000000A /* StreamingService.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		A1000038280D7E5D00000038 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				A100001C280D7E5D0000000E /* Info.plist */,
+				A100001D280D7E5D0000000F /* SerialWarpCapture.entitlements */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		A100001F280D7E5D0000001F /* SerialWarp Capture */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A1000040280D7E5D00000040 /* Build configuration list for PBXNativeTarget "SerialWarp Capture" */;
+			buildPhases = (
+				A1000021280D7E5D00000021 /* Sources */,
+				A100001E280D7E5D00000010 /* Frameworks */,
+				A1000022280D7E5D00000022 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "SerialWarp Capture";
+			productName = SerialWarpCapture;
+			productReference = A1000020280D7E5D00000020 /* SerialWarp Capture.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		A1000050280D7E5D00000050 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1500;
+				LastUpgradeCheck = 1500;
+				TargetAttributes = {
+					A100001F280D7E5D0000001F = {
+						CreatedOnToolsVersion = 15.0;
+					};
+				};
+			};
+			buildConfigurationList = A1000051280D7E5D00000051 /* Build configuration list for PBXProject "SerialWarpCapture" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = A1000030280D7E5D00000030;
+			productRefGroup = A1000033280D7E5D00000033 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				A100001F280D7E5D0000001F /* SerialWarp Capture */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		A1000022280D7E5D00000022 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		A1000021280D7E5D00000021 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A1000001280D7E5D00000001 /* AppDelegate.swift in Sources */,
+				A1000003280D7E5D00000002 /* MainWindowController.swift in Sources */,
+				A1000005280D7E5D00000003 /* SidebarViewController.swift in Sources */,
+				A1000007280D7E5D00000004 /* ContentViewController.swift in Sources */,
+				A1000009280D7E5D00000005 /* DisplaysContentView.swift in Sources */,
+				A100000B280D7E5D00000006 /* SettingsCardView.swift in Sources */,
+				A100000D280D7E5D00000007 /* AppSettingsView.swift in Sources */,
+				A100000F280D7E5D00000008 /* AboutView.swift in Sources */,
+				A1000011280D7E5D00000009 /* AppState.swift in Sources */,
+				A1000013280D7E5D0000000A /* StreamingService.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		A1000060280D7E5D00000060 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		A1000061280D7E5D00000061 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+			};
+			name = Release;
+		};
+		A1000062280D7E5D00000062 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = SerialWarpCapture/Resources/SerialWarpCapture.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_HARDENED_RUNTIME = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = SerialWarpCapture/Resources/Info.plist;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2024 SerialWarp. All rights reserved.";
+				INFOPLIST_KEY_NSPrincipalClass = NSApplication;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 1.0.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.serialwarp.capture;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		A1000063280D7E5D00000063 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = SerialWarpCapture/Resources/SerialWarpCapture.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_HARDENED_RUNTIME = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = SerialWarpCapture/Resources/Info.plist;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2024 SerialWarp. All rights reserved.";
+				INFOPLIST_KEY_NSPrincipalClass = NSApplication;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 1.0.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.serialwarp.capture;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		A1000040280D7E5D00000040 /* Build configuration list for PBXNativeTarget "SerialWarp Capture" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A1000062280D7E5D00000062 /* Debug */,
+				A1000063280D7E5D00000063 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A1000051280D7E5D00000051 /* Build configuration list for PBXProject "SerialWarpCapture" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A1000060280D7E5D00000060 /* Debug */,
+				A1000061280D7E5D00000061 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = A1000050280D7E5D00000050 /* Project object */;
+}
